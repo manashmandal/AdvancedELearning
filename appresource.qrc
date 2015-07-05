@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>atel.png</file>
+        <file>atel.pnh.png</file>
+    </qresource>
+</RCC>
