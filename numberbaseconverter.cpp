@@ -6,7 +6,7 @@
 
 NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::NumberBaseConverter)
+    ui(new Ui::NumberBaseConverter), float_precision(3)
 {
     ui->setupUi(this);
 
@@ -17,6 +17,7 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
     connect(ui->octalEdit, SIGNAL(textEdited(QString)), this, SLOT(octalFloatingPointRemover(QString)));
 
     connect(ui->decimalEdit, SIGNAL(textEdited(QString)), this, SLOT(convertDecimal(QString)));
+    connect(ui->binaryEdit, SIGNAL(textEdited(QString)), this, SLOT(convertBinary(QString)));
 
     //Restricts Hexadecimal Edit input to both lower and uppercase A-F and 0-9 and length 10
     QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f.]{1,10}"), ui->hexadecimalEdit);
@@ -24,7 +25,7 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
 
 
     //Restricts using only 0 and 1
-    QRegExpValidator *binValidator = new QRegExpValidator(QRegExp("[01.]{1,30}"), ui->binaryEdit);
+    QRegExpValidator *binValidator = new QRegExpValidator(QRegExp("[01.]{2,30}"), ui->binaryEdit);
     ui->binaryEdit->setValidator(binValidator);
 
     //Restricts using 0-8
@@ -52,6 +53,32 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
             << "13"
             << "14"
             << "15";
+
+     bin_oct << "000"
+             << "001"
+             << "010"
+             << "011"
+             << "100"
+             << "101"
+             << "110"
+             << "111";
+
+     bin_hex << "0000"
+             << "0001"
+             << "0010"
+             << "0011"
+             << "0100"
+             << "0101"
+             << "0110"
+             << "0111"
+             << "1000"
+             << "1001"
+             << "1010"
+             << "1011"
+             << "1100"
+             << "1101"
+             << "1110"
+             << "1111";
 
      binary << "0"
             << "1"
@@ -113,7 +140,15 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
         binary_hexdecimal.append(qMakePair(binary[i], hexadecimal[i]));
     }
 
+    for (int i = 0; i < bin_hex.size(); i++){
+        binary_for_hexadecimal.append(qMakePair(bin_hex[i], hexadecimal[i]));
+    }
 
+    for (int i = 0; i < bin_oct.size(); i++){
+        binary_for_octal.append(qMakePair(bin_oct[i], octal[i]));
+    }
+
+   qDebug() << intoDecimal("1101.011", Binary);
 
 }
 
@@ -183,6 +218,17 @@ void NumberBaseConverter::convertDecimal(QString dec_input)
     }
 }
 
+void NumberBaseConverter::convertBinary(QString bin_input){
+    if (bin_input.isEmpty()){
+        ui->decimalEdit->clear();
+        ui->hexadecimalEdit->clear();
+        ui->octalEdit->clear();
+    }
+
+    else {
+        ui->decimalEdit->setText(binaryToOthers(bin_input, Decimal));
+    }
+}
 
 
 //Converts decimal to other bases [C]
@@ -239,7 +285,7 @@ QString NumberBaseConverter::decimalToOthers(QString in, BaseType Base){
                 conv_af_fp.append(QString::number(0));
             }
 
-            if (conv_af_fp.size() > 8) break;
+            if (conv_af_fp.size() > float_precision - 1) break;
         }
         out = conv_bef_fp + "." + conv_af_fp;
 
@@ -252,12 +298,71 @@ QString NumberBaseConverter::decimalToOthers(QString in, BaseType Base){
 QString NumberBaseConverter::binaryToOthers(QString in, NumberBaseConverter::BaseType base)
 {
 
+    if (in.at(0) == '0') {
+        QMessageBox::warning(this, "Don't start with 0", "Please start with 1");
+        ui->binaryEdit->clear();
+    }
+
+    switch(base){
+        case Decimal:
+            return intoDecimal(in, Binary);
+            break;
+    }
 
 }
 
+QString NumberBaseConverter::intoDecimal(QString in, BaseType base)
+{
+    const int the_base = base;
+    double floating_part;
+    int integer_part = 0;
+    QStringList input;
+    QString before, after, rev_before;
+    QString integer_part_string, floating_part_string;
+    QString final_out;
+
+    bool fp_exists = false;
+
+    if (in.contains('.') && in[in.indexOf('.') + 1].isNumber() && in[in.indexOf('.')+1] != '0'){
+        fp_exists = true;
+        input = in.split('.');
+        before = input[0];
+        after = input[1];
+    } else {
+        if (in.endsWith('.')) before = in.remove('.');
+        else before = in;
+    }
+
+    //Reversing the string
+    for (int i = before.size() - 1; i >= 0; i-- ){
+        rev_before.append(before[i]);
+    }
+
+    for(int i = 0; i < rev_before.size(); i++){
+        int weight = rev_before[i].digitValue();
+        integer_part += (weight * pow(the_base, i));
+    }
+
+    integer_part_string = QString::number(integer_part);
+
+    if (fp_exists){
+        for (int i = 0; i < after.size(); i++){
+            int weight = after[i].digitValue();
+            floating_part += 1.00 * weight * (pow(the_base, -(i+1)));
+        }
+        floating_part_string = QString::number(floating_part);
+    }
+
+    if (fp_exists) return integer_part_string.append(floating_part_string.remove(0, 1));
+    else return integer_part_string;
+}
+
+
+
 //Converts corresponding digits to another base [N2U?C]
-QString NumberBaseConverter::convertBaseDigit(QString in, BaseType input_base, BaseType output_base){
+QString NumberBaseConverter::convertBaseDigit(QString in, BaseType input_base, BaseType output_base, int spec){
     QString output;
+
     switch(output_base){
         case HexaDecimal:
             output = toHex(in, input_base);
@@ -272,7 +377,23 @@ QString NumberBaseConverter::convertBaseDigit(QString in, BaseType input_base, B
             output = toBin(in, input_base);
             break;
     }
+
     return output;
+}
+
+//Analyzing grouped binary numbers for octal
+QString NumberBaseConverter::toOctGroupedBin(QString in){
+    for (int i = 0; i < bin_oct.size(); i++){
+        if (binary_for_octal[i].first == in){
+            return binary_for_octal[i].second;
+            break;
+        }
+    }
+}
+
+//Analyzing grouped binary for hexadec
+QString NumberBaseConverter::toHexGroupedBin(QString in){
+
 }
 
 
@@ -395,4 +516,11 @@ QString NumberBaseConverter::toOct(QString in, BaseType base){
             }
     }
     return output;
+}
+
+
+//Add Recalculation and loading after precision is changed
+void NumberBaseConverter::on_precisionBox_valueChanged(int arg1)
+{
+    float_precision = arg1;
 }

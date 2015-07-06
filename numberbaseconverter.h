@@ -45,9 +45,12 @@ public:
     QString toDec(QString in, BaseType base);
     QString toBin(QString in, BaseType base);
 
-    QString convertBaseDigit(QString in, BaseType input_base, BaseType output_base);
+    QString convertBaseDigit(QString in, BaseType input_base, BaseType output_base, int spec = 0);
 
 
+    QString toOctGroupedBin(QString in);
+    QString toHexGroupedBin(QString in);
+    QString intoDecimal(QString in, BaseType base);
 public slots:
     void decimalFloatingPointRemover(QString in);
     void binaryFloatingPointRemover(QString in);
@@ -56,9 +59,12 @@ public slots:
 
     void convertDecimal(QString dec_input);
 
+    void convertBinary(QString bin_input);
 private slots:
     void on_okButton_clicked();
 
+
+    void on_precisionBox_valueChanged(int arg1);
 
 private:
     Ui::NumberBaseConverter *ui;
@@ -72,12 +78,20 @@ private:
     QBasePair binary_hexdecimal;
     QBasePair octal_hexadecimal;
 
+    QBasePair binary_for_octal;
+    QBasePair binary_for_hexadecimal;
+
 
     //Base Numbers
     QBaseNumberList decimal;
     QBaseNumberList binary;
     QBaseNumberList octal;
     QBaseNumberList hexadecimal;
+
+    QBaseNumberList bin_hex;
+    QBaseNumberList bin_oct;
+
+    size_t float_precision;
 
 };
 
