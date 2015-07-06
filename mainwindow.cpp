@@ -27,8 +27,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->searchGroupBox->setVisible(false);
     loadTopicLink();
     //WebView Loads first item on the tree
-    ui->webView->load(topic_name_link_map.value(DEFAULT_INDEX).second);
 
+    QUrl theUrl(file_initial + "baseconvert-ui-master/index" + html);
+
+    qDebug() << theUrl;
+    //ui->webView->load(topic_name_link_map.value(DEFAULT_INDEX).second);
+    ui->webView->load(theUrl);
 }
 
 MainWindow::~MainWindow()
