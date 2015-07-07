@@ -10,14 +10,17 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
+    //Connectiong Float point remover to the line edits
     connect(ui->decimalEdit, SIGNAL(textEdited(QString)), this, SLOT(decimalFloatingPointRemover(QString)));
     connect(ui->binaryEdit, SIGNAL(textEdited(QString)), this, SLOT(binaryFloatingPointRemover(QString)));
     connect(ui->hexadecimalEdit, SIGNAL(textEdited(QString)), this, SLOT(hexadecFloatingPointRemover(QString)));
     connect(ui->octalEdit, SIGNAL(textEdited(QString)), this, SLOT(octalFloatingPointRemover(QString)));
 
+    //Connecting line edit text changed signal with the base conversion slots
     connect(ui->decimalEdit, SIGNAL(textEdited(QString)), this, SLOT(convertDecimal(QString)));
     connect(ui->binaryEdit, SIGNAL(textEdited(QString)), this, SLOT(convertBinary(QString)));
+    connect(ui->octalEdit, SIGNAL(textEdited(QString)), this, SLOT(convertOctal(QString)));
+    connect(ui->hexadecimalEdit, SIGNAL(textEdited(QString)), this, SLOT(convertHexadecimal(QString)));
 
     //Restricts Hexadecimal Edit input to both lower and uppercase A-F and 0-9 and length 10
     QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f.]{1,10}"), ui->hexadecimalEdit);
@@ -29,7 +32,7 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
     ui->binaryEdit->setValidator(binValidator);
 
     //Restricts using 0-8
-    QRegExpValidator *octValidator = new QRegExpValidator(QRegExp("[0-8.]{1,30}"), ui->octalEdit);
+    QRegExpValidator *octValidator = new QRegExpValidator(QRegExp("[0-7.]{1,30}"), ui->octalEdit);
     ui->octalEdit->setValidator(octValidator);
 
     //Restricts using 0-9
@@ -131,6 +134,7 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
                  << "E"
                  << "F";
 
+     //Making Pairs
     for (int i = 0; i < decimal.size(); i++){
         decimal_hexadecimal.append(qMakePair(decimal[i], hexadecimal[i]));
         decimal_octal.append(qMakePair(decimal[i], octal[i]));
@@ -140,10 +144,12 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
         binary_hexdecimal.append(qMakePair(binary[i], hexadecimal[i]));
     }
 
+    //For Grouped binary numbers
     for (int i = 0; i < bin_hex.size(); i++){
         binary_for_hexadecimal.append(qMakePair(bin_hex[i], hexadecimal[i]));
     }
 
+    //For Grouped binary numbers
     for (int i = 0; i < bin_oct.size(); i++){
         binary_for_octal.append(qMakePair(bin_oct[i], octal[i]));
     }
@@ -219,6 +225,7 @@ void NumberBaseConverter::convertDecimal(QString dec_input)
     }
 }
 
+//Slot for converting from binary to other bases [C]
 void NumberBaseConverter::convertBinary(QString bin_input){
     if (bin_input.isEmpty()){
         ui->decimalEdit->clear();
@@ -232,6 +239,40 @@ void NumberBaseConverter::convertBinary(QString bin_input){
         ui->hexadecimalEdit->setText(binaryToOthers(bin_input, HexaDecimal));
     }
 }
+
+//Slot for converting from hexadecimal to other bases
+void NumberBaseConverter::convertHexadecimal(QString hex_input)
+{
+    if (hex_input.isEmpty()){
+        ui->binaryEdit->clear();
+        ui->decimalEdit->clear();
+        ui->octalEdit->clear();
+    } else {
+        ui->decimalEdit->setText(hexadecimalToOthers(hex_input, Decimal));
+        ui->binaryEdit->setText(hexadecimalToOthers(hex_input, Binary));
+        ui->octalEdit->setText(hexadecimalToOthers(hex_input, Octal));
+    }
+
+}
+
+//Slot for converting octal to other bases
+void NumberBaseConverter::convertOctal(QString oct_input)
+{
+    if (oct_input.isEmpty()){
+        ui->decimalEdit->clear();
+        ui->hexadecimalEdit->clear();
+        ui->binaryEdit->clear();
+    }
+
+    else {
+        ui->binaryEdit->setText(octalToOthers(oct_input, Binary));
+        ui->hexadecimalEdit->setText(octalToOthers(oct_input, HexaDecimal));
+        ui->decimalEdit->setText(octalToOthers(oct_input, Decimal));
+    }
+
+}
+
+
 
 QString NumberBaseConverter::binaryToOctal(QString in){
 
@@ -466,14 +507,14 @@ QString NumberBaseConverter::intoDecimal(QString in, BaseType base)
 
     bool fp_exists = false;
 
-    if (in.contains('.') && in[in.indexOf('.') + 1].isNumber() && in[in.indexOf('.')+1] != '0'){
-        fp_exists = true;
+    if (in.contains('.')){
         input = in.split('.');
         before = input[0];
         after = input[1];
+        if (after.size() != 0) fp_exists = true;
+
     } else {
-        if (in.endsWith('.')) before = in.remove('.');
-        else before = in;
+        before = in;
     }
 
     //Reversing the string
@@ -536,6 +577,16 @@ QString NumberBaseConverter::toOctGroupedBin(QString in){
     }
     return out;
 }
+
+QString NumberBaseConverter::toBinGroupedOct(QString in){
+    for (int i = 0; i < bin_oct.size(); i++){
+        if (binary_for_octal[i].second == in) {
+            return binary_for_octal[i].first;
+            break;
+        }
+    }
+}
+
 
 //Analyzing grouped binary for hexadec
 QString NumberBaseConverter::toHexGroupedBin(QString in){
@@ -612,6 +663,128 @@ QString NumberBaseConverter::toDec(QString in, BaseType base)
     return output;
 }
 
+
+QString NumberBaseConverter::octalToOthers(QString in , BaseType base)
+{
+    QString out;
+    switch(base){
+        case Binary:
+            out = octalToBinary(in);
+            break;
+        case HexaDecimal:
+            out = binaryToHexadecimal(octalToBinary(in));
+            break;
+        case Decimal:
+            out = binaryToOthers(octalToBinary(in), Decimal);
+            break;
+    }
+
+    return out;
+}
+
+QString NumberBaseConverter::hexadecimalToOthers(QString in, NumberBaseConverter::BaseType base)
+{
+    QString out;
+    switch(base){
+        case Decimal:
+            out = binaryToOthers(hexadecimalToBinary(in), Decimal);
+            break;
+        case Binary:
+            out = hexadecimalToBinary(in);
+            break;
+        case Octal:
+            out = binaryToOthers(hexadecimalToBinary(in), Octal);
+            break;
+    }
+
+    return out;
+}
+
+
+//Converts Octal to binary [C?MN]
+QString NumberBaseConverter::octalToBinary(QString in)
+{
+    bool fp_exists = false;
+    QString integer_string, floating_string, conv_int, conv_float;
+    QString final_out;
+    QStringList splitted;
+
+    //Checking floating point
+    if (in.contains('.')){
+        splitted << in.split('.');
+        integer_string = splitted[0];
+        floating_string = splitted[1];
+        if (floating_string.size() != 0) fp_exists = true;
+        splitted.clear();
+    } else {
+        integer_string = in;
+    }
+
+    for (int i = 0; i < integer_string.size(); i++){
+        conv_int.append(toBinGroupedOct(integer_string.at(i)));
+    }
+
+    if (fp_exists){
+        for (int i = 0; i < floating_string.size(); i++)
+        conv_float.append(toBinGroupedOct(floating_string.at(i)));
+
+
+
+        final_out = conv_int + "." + conv_float;
+    }
+
+    else final_out = conv_int;
+
+    return final_out;
+}
+
+//Converts Hexadecimal to binary
+QString NumberBaseConverter::hexadecimalToBinary(QString in)
+{
+
+    bool fp_exists = false;
+    QString integer_string, floating_string, conv_int, conv_float;
+    QString final_out;
+    QStringList splitted;
+
+    //Checking floating point
+    if (in.contains('.')){
+        splitted << in.split('.');
+        integer_string = splitted[0];
+        floating_string = splitted[1];
+        if (floating_string.size() != 0) fp_exists = true;
+        splitted.clear();
+    } else {
+        integer_string = in;
+    }
+
+    for (int i = 0; i < integer_string.size(); i++){
+        conv_int.append(toBinGroupedHex(integer_string.at(i)));
+    }
+
+    if (fp_exists){
+        for (int i = 0; i < floating_string.size(); i++)
+        conv_float.append(toBinGroupedHex(floating_string.at(i)));
+
+
+        final_out = conv_int + "." + conv_float;
+    }
+
+    else final_out = conv_int;
+
+    return final_out;
+}
+
+//Returns grouped binary number for hexadecimal input
+QString NumberBaseConverter::toBinGroupedHex(QString in){
+    for (int i = 0; i < bin_hex.size(); i++){
+        if (binary_for_hexadecimal[i].second == in){
+            return binary_for_hexadecimal[i].first;
+            break;
+        }
+    }
+}
+
 //Take a string and give a Hexadecimal output for several digits [N2U?C]
 QString NumberBaseConverter::toHex(QString in, BaseType base)
 {
@@ -672,10 +845,11 @@ QString NumberBaseConverter::toOct(QString in, BaseType base){
 }
 
 
-//Add Recalculation and loading after precision is changed
+//reloads via emitting after precision is changed
 void NumberBaseConverter::on_precisionBox_valueChanged(int arg1)
 {
     float_precision = arg1;
+    emit ui->decimalEdit->textEdited(ui->decimalEdit->text());
 }
 
 void NumberBaseConverter::on_clearButton_clicked()

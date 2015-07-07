@@ -15,11 +15,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     numberbaseconverter.cpp \
-    numberbasechart.cpp
+    numberbasechart.cpp \
+    basegenerator.cpp \
+    qbase.cpp
 
 HEADERS  += mainwindow.h \
     numberbaseconverter.h \
-    numberbasechart.h
+    numberbasechart.h \
+    basegenerator.h \
+    qbase.h
 
 FORMS    += mainwindow.ui \
     numberbaseconverter.ui \

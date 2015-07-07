@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+//#include "basegenerator.h"
 #include <QApplication>
 #include <QSplashScreen>
 #include <QTest>
@@ -26,4 +27,7 @@ int main(int argc, char *argv[])
     splash->finish(&w);
     delete splash;
     return a.exec();
+
+
+
 }

@@ -39,6 +39,8 @@ public:
 
     QString decimalToOthers(QString in, BaseType Base);
     QString binaryToOthers(QString in, BaseType base);
+    QString octalToOthers(QString in, BaseType base);
+    QString hexadecimalToOthers(QString in, BaseType base);
 
     QString toHex(QString in, BaseType base);
     QString toOct(QString in, BaseType base);
@@ -53,15 +55,22 @@ public:
     QString intoDecimal(QString in, BaseType base);
     QString binaryToOctal(QString in);
     QString binaryToHexadecimal(QString in);
+
+    QString octalToBinary(QString in);
+    QString toBinGroupedOct(QString in);
+    QString hexadecimalToBinary(QString in);
+    QString toBinGroupedHex(QString in);
 public slots:
     void decimalFloatingPointRemover(QString in);
     void binaryFloatingPointRemover(QString in);
     void hexadecFloatingPointRemover(QString in);
     void octalFloatingPointRemover(QString in);
 
+    //Conversion slots
     void convertDecimal(QString dec_input);
-
     void convertBinary(QString bin_input);
+    void convertOctal(QString oct_input);
+    void convertHexadecimal(QString hex_input);
 private slots:
     void on_okButton_clicked();
 
