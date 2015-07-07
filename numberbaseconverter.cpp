@@ -148,15 +148,15 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
         binary_for_octal.append(qMakePair(bin_oct[i], octal[i]));
     }
 
-   qDebug() << intoDecimal("1101.011", Binary);
-
 }
 
+//Destructor [duh!]
 NumberBaseConverter::~NumberBaseConverter()
 {
     delete ui;
 }
 
+//clicking on the ok/done button will close the dialog
 void NumberBaseConverter::on_okButton_clicked()
 {
     this->close();
@@ -194,6 +194,7 @@ void NumberBaseConverter::reduceFloatingPoint(QString input, QLineEdit *current_
         if (input[i] == '.') {
             point_occured++;
             if (point_occured > 1)  {
+                    QMessageBox::warning(this, "More than one Floating Point detected", "Please use only one floating point");
                     current_line_edit->setText(current_line_edit->text().remove(i, 1));
             }
         }
@@ -206,9 +207,9 @@ void NumberBaseConverter::convertDecimal(QString dec_input)
 {
 
     if (dec_input.isEmpty()){
-        ui->binaryEdit->setText(dec_input);
-        ui->octalEdit->setText(dec_input);
-        ui->hexadecimalEdit->setText(dec_input);
+        ui->binaryEdit->clear();
+        ui->octalEdit->clear();
+        ui->hexadecimalEdit->clear();
     }
 
     else {
@@ -227,7 +228,147 @@ void NumberBaseConverter::convertBinary(QString bin_input){
 
     else {
         ui->decimalEdit->setText(binaryToOthers(bin_input, Decimal));
+        ui->octalEdit->setText(binaryToOthers(bin_input, Octal));
+        ui->hexadecimalEdit->setText(binaryToOthers(bin_input, HexaDecimal));
     }
+}
+
+QString NumberBaseConverter::binaryToOctal(QString in){
+
+    bool fp_exists = false;
+    QString integer_string, floating_string, conv_int, conv_float;
+    QString final_out;
+
+    QStringList splitted, splitted_float;
+
+    //Checking floating point
+    if (in.contains('.')){
+        splitted << in.split('.');
+        integer_string = splitted[0];
+        floating_string = splitted[1];
+        if (floating_string.size() != 0) fp_exists = true;
+        splitted.clear();
+    } else {
+        integer_string = in;
+    }
+
+    //Convert the ungrouped binary into grouped one
+    while(integer_string.size() % 3 != 0){
+        integer_string.prepend("0");
+        if (integer_string.size() % 3 == 0) break; //Extra safety mechanism
+    }
+
+    //Adding signature for grouping
+    for (int i = 3; i < integer_string.size(); i+=3){
+        integer_string.insert(i, "_");
+        i++;
+    }
+
+    //Splitting signature
+    splitted << integer_string.split("_");
+
+    //Converting each group into octal digit
+    foreach(QString s, splitted){
+        conv_int.append(toOctGroupedBin(s));
+    }
+
+    //Now changing the floating part
+    if (fp_exists){
+        while (floating_string.size() % 3 != 0){
+            floating_string.append("0");
+            if (floating_string.size() % 3 == 0) break; // u know wat?
+        }
+
+        //Signature for floating part
+        for (int i = 3; i < floating_string.size(); i+= 3){
+            floating_string.insert(i, "_");
+            i++;
+        }
+
+        //Splitting
+        if (floating_string.contains("_")) splitted_float << floating_string.split("_");
+        else splitted_float << floating_string;
+
+        //Converting the binary digits into octal
+        foreach(QString s, splitted_float){
+            conv_float.append(toOctGroupedBin(s));
+        }
+
+    }
+    //Calculating results
+    if (fp_exists) final_out = conv_int + "." + conv_float;
+    else final_out = conv_int;
+    return final_out;
+}
+
+QString NumberBaseConverter::binaryToHexadecimal(QString in)
+{
+
+
+    bool fp_exists = false;
+    QString integer_string, floating_string, conv_int, conv_float;
+    QString final_out;
+
+    QStringList splitted, splitted_float;
+
+    //Checking floating point
+    if (in.contains('.')){
+        splitted << in.split('.');
+        integer_string = splitted[0];
+        floating_string = splitted[1];
+        if (floating_string.size() != 0) fp_exists = true;
+        splitted.clear();
+    } else {
+        integer_string = in;
+    }
+
+    //Convert the ungrouped binary into grouped one
+    while(integer_string.size() % 4 != 0){
+        integer_string.prepend("0");
+        if (integer_string.size() % 4 == 0) break; //Extra safety mechanism
+    }
+
+    //Adding signature for grouping
+    for (int i = 4; i < integer_string.size(); i+=4){
+        integer_string.insert(i, "_");
+        i++;
+    }
+
+    //Splitting signature
+    splitted << integer_string.split("_");
+
+    //Converting each group into hexadec digit
+    foreach(QString s, splitted){
+        conv_int.append(toHexGroupedBin(s));
+    }
+
+    //Now changing the floating part
+    if (fp_exists){
+        while (floating_string.size() % 4 != 0){
+            floating_string.append("0");
+            if (floating_string.size() % 4 == 0) break; // u know wat?
+        }
+
+        //Signature for floating part
+        for (int i = 4; i < floating_string.size(); i+= 4){
+            floating_string.insert(i, "_");
+            i++;
+        }
+
+        //Splitting
+        if (floating_string.contains("_")) splitted_float << floating_string.split("_");
+        else splitted_float << floating_string;
+
+        //Converting the binary digits into octal
+        foreach(QString s, splitted_float){
+            conv_float.append(toHexGroupedBin(s));
+        }
+
+    }
+    //Calculating results
+    if (fp_exists) final_out = conv_int + "." + conv_float;
+    else final_out = conv_int;
+    return final_out;
 }
 
 
@@ -298,17 +439,19 @@ QString NumberBaseConverter::decimalToOthers(QString in, BaseType Base){
 QString NumberBaseConverter::binaryToOthers(QString in, NumberBaseConverter::BaseType base)
 {
 
-    if (in.at(0) == '0') {
-        QMessageBox::warning(this, "Don't start with 0", "Please start with 1");
-        ui->binaryEdit->clear();
-    }
-
     switch(base){
         case Decimal:
             return intoDecimal(in, Binary);
             break;
-    }
+        case Octal:
+            return binaryToOctal(in);
+            break;
+        case HexaDecimal:
+            return binaryToHexadecimal(in);
+            break;
 
+
+    }
 }
 
 QString NumberBaseConverter::intoDecimal(QString in, BaseType base)
@@ -360,7 +503,7 @@ QString NumberBaseConverter::intoDecimal(QString in, BaseType base)
 
 
 //Converts corresponding digits to another base [N2U?C]
-QString NumberBaseConverter::convertBaseDigit(QString in, BaseType input_base, BaseType output_base, int spec){
+QString NumberBaseConverter::convertBaseDigit(QString in, BaseType input_base, BaseType output_base){
     QString output;
 
     switch(output_base){
@@ -376,6 +519,7 @@ QString NumberBaseConverter::convertBaseDigit(QString in, BaseType input_base, B
         case Binary:
             output = toBin(in, input_base);
             break;
+
     }
 
     return output;
@@ -383,17 +527,26 @@ QString NumberBaseConverter::convertBaseDigit(QString in, BaseType input_base, B
 
 //Analyzing grouped binary numbers for octal
 QString NumberBaseConverter::toOctGroupedBin(QString in){
+    QString out;
     for (int i = 0; i < bin_oct.size(); i++){
         if (binary_for_octal[i].first == in){
-            return binary_for_octal[i].second;
+            out =  binary_for_octal[i].second;
             break;
         }
     }
+    return out;
 }
 
 //Analyzing grouped binary for hexadec
 QString NumberBaseConverter::toHexGroupedBin(QString in){
-
+    QString out;
+    for (int i = 0; i < bin_hex.size(); i++){
+        if (binary_for_hexadecimal[i].first == in){
+            out = binary_for_hexadecimal[i].second;
+            break;
+        }
+    }
+    return out;
 }
 
 
@@ -523,4 +676,13 @@ QString NumberBaseConverter::toOct(QString in, BaseType base){
 void NumberBaseConverter::on_precisionBox_valueChanged(int arg1)
 {
     float_precision = arg1;
+}
+
+void NumberBaseConverter::on_clearButton_clicked()
+{
+    ui->binaryEdit->clear();
+    ui->decimalEdit->clear();
+    ui->hexadecimalEdit->clear();
+    ui->octalEdit->clear();
+    ui->precisionBox->setValue(3);
 }
