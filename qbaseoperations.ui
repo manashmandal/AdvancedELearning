@@ -453,17 +453,6 @@
          </layout>
         </item>
        </layout>
-       <zorder>label_6</zorder>
-       <zorder>complementBaseSpinBox</zorder>
-       <zorder>label_7</zorder>
-       <zorder>rsInputNumberEdit</zorder>
-       <zorder>label_8</zorder>
-       <zorder>rsComplementEdit</zorder>
-       <zorder>rMinusOneEdit</zorder>
-       <zorder>label_9</zorder>
-       <zorder>label_6</zorder>
-       <zorder>label_6</zorder>
-       <zorder>verticalSpacer_2</zorder>
       </widget>
      </item>
      <item>
@@ -604,7 +593,11 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLineEdit" name="decNumberEdit"/>
+               <widget class="QLineEdit" name="decNumberEdit">
+                <property name="placeholderText">
+                 <string>Decimal Number (Non-floating)</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -634,7 +627,11 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLineEdit" name="BCDLineEdit"/>
+               <widget class="QLineEdit" name="BCDLineEdit">
+                <property name="placeholderText">
+                 <string>BCD Value</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>

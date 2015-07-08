@@ -43,6 +43,8 @@ public slots:
     void complementValidatorGenerator(int val);
     void calculateRsComplement(QString in);
     void grayToBinary(QString in);
+    void binaryToGray(QString in);
+    void BCD(QString in);
 private slots:
     //Custom Slots
     void customBaseValidatorGenerator(int val);
