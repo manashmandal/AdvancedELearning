@@ -27,6 +27,7 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
     ui->hexadecimalEdit->setValidator(hexValidator);
 
 
+
     //Restricts using only 0 and 1
     QRegExpValidator *binValidator = new QRegExpValidator(QRegExp("[01.]{2,30}"), ui->binaryEdit);
     ui->binaryEdit->setValidator(binValidator);
