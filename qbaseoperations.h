@@ -42,6 +42,7 @@ public slots:
     void hexadecimalToOthers(QString in);
     void complementValidatorGenerator(int val);
     void calculateRsComplement(QString in);
+    void grayToBinary(QString in);
 private slots:
     //Custom Slots
     void customBaseValidatorGenerator(int val);

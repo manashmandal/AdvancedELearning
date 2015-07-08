@@ -30,6 +30,7 @@ QBaseOperations::QBaseOperations(QWidget *parent) :
     connect(ui->cusEdit, SIGNAL(textEdited(QString)), this, SLOT(customToOthers(QString)));
     connect(ui->octEdit, SIGNAL(textEdited(QString)), this, SLOT(octalToOthers(QString)));
     connect(ui->hexEdit, SIGNAL(textEdited(QString)), this, SLOT(hexadecimalToOthers(QString)));
+    connect(ui->grayLineEdit, SIGNAL(textEdited(QString)), this, SLOT(grayToBinary(QString)));
 
     /* Setting validators for
      * binEdit - Number Base Converter Group Box
@@ -45,6 +46,9 @@ QBaseOperations::QBaseOperations(QWidget *parent) :
     ui->decEdit->setValidator(decimalValidator);
     QRegExpValidator *octalValidator = new QRegExpValidator(QRegExp("[0-7.]{40}"));
     ui->octEdit->setValidator(octalValidator);
+    QRegExpValidator *binaryAndBCDValidator = new QRegExpValidator(QRegExp("[01]{40}"));
+    ui->BCDLineEdit->setValidator(binaryAndBCDValidator);
+    ui->binaryLineEdit->setValidator(binaryAndBCDValidator);
 
     //Initialize validators with current spinbox value
     complementValidatorGenerator(ui->complementBaseSpinBox->value());
@@ -251,4 +255,11 @@ void QBaseOperations::on_complementBaseSpinBox_valueChanged(int arg1)
 {
     ui->rsComplementEdit->clear();
     ui->rMinusOneEdit->clear();
+}
+
+//Converts gray code to binary and updates
+void QBaseOperations::grayToBinary(QString in)
+{
+    QBase base;
+    ui->binaryLineEdit->setText(base.grayToBinary(in));
 }

@@ -338,11 +338,13 @@ QString QBase::toOtherBase(uInt base, QString in){
 /*Performs binary to gray conversion [!duh]*/
 QString QBase::binaryToGray(QString in)
 {
-    QString output;
+    QString output = "";
+    if (!in.isEmpty()){
+    output.clear();
     output.append(in.at(0));
-
     for (int i = 0, j = 1; j < in.size(); i++, j++){
         output.append(XOR(in.at(i), in.at(j)));
+       }
     }
 
     return output;
@@ -351,10 +353,13 @@ QString QBase::binaryToGray(QString in)
 /* [duh!]  */
 QString QBase::grayToBinary(QString in)
 {
-    QString out;
-    out.append(in.at(0));
-    for (int i = 0, j = 1; j < in.size(); i++, j++){
-        out.append(XOR(out.at(i), in.at(j)));
+    QString out = "";
+    if (!in.isEmpty()){
+        out.clear();
+        out.append(in.at(0));
+        for (int i = 0, j = 1; j < in.size(); i++, j++){
+            out.append(XOR(out.at(i), in.at(j)));
+        }
     }
     return out;
 }

@@ -29,15 +29,15 @@ int main(int argc, char *argv[])
 //    w.show();
 //    splash->finish(&w);
 //    delete splash;
- QApplication a(argc, argv);
-    QBaseOperations *op = new QBaseOperations;
-    op->show();
-    return a.exec();
+// QApplication a(argc, argv);
+//    QBaseOperations *op = new QBaseOperations;
+//    op->show();
+//    return a.exec();
 
-//    QBase base;
+    QBase base;
 
-//    qDebug() << "r;s comp : " <<  base.calcRMinusOneComplement(8, "2450.011");
-//    base.calcRComplement(16, "2450");
+    qDebug() << "r;s comp : " <<  base.calcRMinusOneComplement(8, "2450.011");
+    qDebug() << base.grayToBinary("");
 
 
 }

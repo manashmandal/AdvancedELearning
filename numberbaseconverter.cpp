@@ -4,6 +4,13 @@
 #include <stdlib.h>
 #include <math.h>
 
+
+/*WARNING:
+ *
+ *  Lengthy and outdated solution, not used in the software package it has its sentimental value though, my first (near) 1k lines of codes :P, Rest In Blockes
+ * My work here is done, you've been warned*/
+
+
 NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NumberBaseConverter), float_precision(3)
