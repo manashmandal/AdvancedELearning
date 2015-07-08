@@ -55,6 +55,8 @@ private slots:
 
 
 
+    void on_complementBaseSpinBox_valueChanged(int arg1);
+
 private:
     void removeExtraFloatingPoint(QString in, QLineEdit *currEdit);
 

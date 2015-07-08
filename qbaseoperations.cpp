@@ -246,3 +246,9 @@ void QBaseOperations::calculateRsComplement(QString in)
         ui->rMinusOneEdit->clear();
     }
 }
+
+void QBaseOperations::on_complementBaseSpinBox_valueChanged(int arg1)
+{
+    ui->rsComplementEdit->clear();
+    ui->rMinusOneEdit->clear();
+}
