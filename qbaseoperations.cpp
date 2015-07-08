@@ -61,6 +61,8 @@ QBaseOperations::QBaseOperations(QWidget *parent) :
 
     //Connecting rs complement line edits with slots
     connect(ui->rsInputNumberEdit, SIGNAL(textEdited(QString)), this, SLOT(calculateRsComplement(QString)));
+
+    layout()->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 QBaseOperations::~QBaseOperations()
@@ -282,4 +284,10 @@ void QBaseOperations::BCD(QString in)
     QBase base;
     if (!in.isEmpty()) ui->BCDLineEdit->setText(base.toBCD(in));
     else ui->BCDLineEdit->setText(QString::null);
+}
+
+void QBaseOperations::on_moreButton_clicked()
+{
+
+    resize(height(), minimumHeight());
 }
