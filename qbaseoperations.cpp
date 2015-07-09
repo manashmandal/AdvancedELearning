@@ -2,15 +2,20 @@
 #include "ui_qbaseoperations.h"
 #include "qbase.h"
 
+/*
+ * This is the controller class of QBase, most of the working function were used from QBase
+ * */
 
 QBaseOperations::QBaseOperations(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::QBaseOperations), reserved_base_digits("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    QWidget(parent), reserved_base_digits("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+    ui(new Ui::QBaseOperations)
 {
     ui->setupUi(this);
     //Hiding other groupboxes at beginning
     ui->binaryToGrayBCDGroupBox->setVisible(false);
     ui->complementGroupBox->setVisible(false);
+
+
 
     //Connecting custom spinbox with validator generator
     connect(ui->customBaseBox, SIGNAL(valueChanged(int)), this, SLOT(customBaseValidatorGenerator(int)));
@@ -39,6 +44,9 @@ QBaseOperations::QBaseOperations(QWidget *parent) :
      * hexEdit -            ""
      * decEdit -            ""
      * octEdit -            ""
+     * grayLineEdit --  Binary To Gray and BCD Group Box
+     * binaryLineEdit --        ""
+     * decNumberEdit --         ""
      * */
     QRegExpValidator *binaryValidator = new QRegExpValidator(QRegExp("[01.]{40}"));
     ui->binEdit->setValidator(binaryValidator);
@@ -62,7 +70,24 @@ QBaseOperations::QBaseOperations(QWidget *parent) :
     //Connecting rs complement line edits with slots
     connect(ui->rsInputNumberEdit, SIGNAL(textEdited(QString)), this, SLOT(calculateRsComplement(QString)));
 
+
+    //Keeping the layout fixed until the button is pressed
     layout()->setSizeConstraint(QLayout::SetFixedSize);
+
+
+    //More button initialize with icons
+    ui->moreButton->setText("More");
+    ui->moreButton->setIcon(QIcon(":/images/left_arrow.svg"));
+    ui->doneButton->setIcon(QIcon(":/images/done_icon.svg"));
+    ui->clearButton->setIcon(QIcon(":/images/clear_icon.svg"));
+
+
+
+    setWindowTitle("Number Base Operation Toolbox");
+
+    setWindowIcon(QIcon(":/images/qbase_operation.svg"));
+
+
 }
 
 QBaseOperations::~QBaseOperations()
@@ -77,11 +102,13 @@ void QBaseOperations::on_moreButton_toggled(bool checked)
     if (checked){
         ui->binaryToGrayBCDGroupBox->setVisible(true);
         ui->complementGroupBox->setVisible(true);
-        ui->moreButton->setText("Less <<");
+        ui->moreButton->setText("Less");
+        ui->moreButton->setIcon(QIcon(":/images/right_arrow.svg"));
     } else {
         ui->binaryToGrayBCDGroupBox->setVisible(false);
         ui->complementGroupBox->setVisible(false);
-        ui->moreButton->setText("More >>");
+        ui->moreButton->setText("More");
+        ui->moreButton->setIcon(QIcon(":/images/left_arrow.svg"));
     }
 }
 
@@ -92,7 +119,7 @@ void QBaseOperations::on_doneButton_clicked()
 }
 
 
-//Custom validator generator [C]
+//Custom validator generator for custom base lineedit [C]
 void QBaseOperations::customBaseValidatorGenerator(int val)
 {
     ui->cusEdit->clear();
@@ -237,7 +264,7 @@ void QBaseOperations::on_clearButton_clicked()
     clearBaseGBoxLineEdits();
 }
 
-//Calculates r and r-1 complement and update the line edits with calculated results
+//Calculates r and r-1 complement and update the line edits with calculated results [C]
 void QBaseOperations::calculateRsComplement(QString in)
 {
     QBase base;
@@ -258,6 +285,7 @@ void QBaseOperations::calculateRsComplement(QString in)
     }
 }
 
+//Clear the lineEdits on changing the spinBox value
 void QBaseOperations::on_complementBaseSpinBox_valueChanged(int arg1)
 {
     ui->rsComplementEdit->clear();
@@ -282,12 +310,7 @@ void QBaseOperations::binaryToGray(QString in)
 void QBaseOperations::BCD(QString in)
 {
     QBase base;
-    if (!in.isEmpty()) ui->BCDLineEdit->setText(base.toBCD(in));
-    else ui->BCDLineEdit->setText(QString::null);
+    if (!in.isEmpty()) ui->BCDLineEdit->setText(base.toBCD(in)); //Extra care !!
+    else ui->BCDLineEdit->setText(QString::null); //If they give empty they'll get empty
 }
 
-void QBaseOperations::on_moreButton_clicked()
-{
-
-    resize(height(), minimumHeight());
-}

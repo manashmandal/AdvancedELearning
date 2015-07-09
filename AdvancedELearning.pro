@@ -17,18 +17,23 @@ SOURCES += main.cpp\
     numberbaseconverter.cpp \
     numberbasechart.cpp \
     qbase.cpp \
-    qbaseoperations.cpp
+    qbaseoperations.cpp \
+    qboolalgebra.cpp \
+    aboutme.cpp
 
 HEADERS  += mainwindow.h \
     numberbaseconverter.h \
     numberbasechart.h \
     qbase.h \
-    qbaseoperations.h
+    qbaseoperations.h \
+    qboolalgebra.h \
+    aboutme.h
 
 FORMS    += mainwindow.ui \
     numberbaseconverter.ui \
     numberbasechart.ui \
-    qbaseoperations.ui
+    qbaseoperations.ui \
+    aboutme.ui
 
 RESOURCES += \
     appresource.qrc

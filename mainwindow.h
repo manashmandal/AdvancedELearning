@@ -6,7 +6,9 @@
 
 #include "numberbaseconverter.h"
 #include "numberbasechart.h"
+#include "qbaseoperations.h"
 
+#include <QIcon>
 #include <QMainWindow>
 #include <QWebView>
 #include <QString>
@@ -24,6 +26,10 @@
 #include <QFontDialog>
 #include <QFont>
 #include <QWebSettings>
+#include <QPropertyAnimation>
+#include <QTimer>
+#include <QWidget>
+#include <QPixmap>
 
 
 namespace Ui {
@@ -61,6 +67,8 @@ private slots:
 
     void on_actionNumber_Base_Chart_triggered();
 
+
+
 signals:
     void passFoundTopicList(QStringList topic_list);
     void passKey(int);
@@ -81,6 +89,9 @@ private:
 
     NumberBaseConverter *converter;
     NumberBaseChart *chart;
+    QBaseOperations *op;
+
+
 
 };
 

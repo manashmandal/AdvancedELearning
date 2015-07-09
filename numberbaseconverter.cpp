@@ -17,6 +17,8 @@ NumberBaseConverter::NumberBaseConverter(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
+
     //Connectiong Float point remover to the line edits
     connect(ui->decimalEdit, SIGNAL(textEdited(QString)), this, SLOT(decimalFloatingPointRemover(QString)));
     connect(ui->binaryEdit, SIGNAL(textEdited(QString)), this, SLOT(binaryFloatingPointRemover(QString)));

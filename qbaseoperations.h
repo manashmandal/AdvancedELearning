@@ -10,6 +10,10 @@
 #include <QSpinBox>
 #include <QPushButton>
 #include <QDebug>
+#include <QPropertyAnimation>
+#include <QTimer>
+#include <QIcon>
+#include <QPixmap>
 
 namespace Ui {
 class QBaseOperations;
@@ -60,13 +64,11 @@ private slots:
 
     void on_complementBaseSpinBox_valueChanged(int arg1);
 
-    void on_moreButton_clicked();
-
 private:
-    void removeExtraFloatingPoint(QString in, QLineEdit *currEdit);
-
-    QString reserved_base_digits;
     Ui::QBaseOperations *ui;
+    void removeExtraFloatingPoint(QString in, QLineEdit *currEdit);
+    QString reserved_base_digits;
+
 };
 
 #endif // QBASEOPERATIONS_H

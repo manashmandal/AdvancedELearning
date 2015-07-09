@@ -2,5 +2,18 @@
     <qresource prefix="/images">
         <file>atel.png</file>
         <file>atel.pnh.png</file>
+        <file>app_icon.png</file>
+        <file>left_arrow.png</file>
+        <file>qbaseop_icon.png</file>
+        <file>app_icon.svg</file>
+        <file>qbase_operation.svg</file>
+        <file>right_arrow.svg</file>
+        <file>left_arrow.svg</file>
+        <file>done_icon.svg</file>
+        <file>clear_icon.svg</file>
+        <file>atelsplash_2.svg</file>
+        <file>atelsplash_2.png</file>
+        <file>fontsizeicon.svg</file>
+        <file>charticon.svg</file>
     </qresource>
 </RCC>

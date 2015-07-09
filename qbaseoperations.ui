@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>QBaseOperations</class>
  <widget class="QWidget" name="QBaseOperations">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -91,7 +94,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>45</width>
+                  <width>46</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -125,7 +128,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>50</width>
+                  <width>51</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -372,7 +375,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>13</width>
+                  <width>9</width>
                   <height>17</height>
                  </size>
                 </property>
@@ -503,7 +506,7 @@
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>19</width>
+                    <width>20</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -598,7 +601,7 @@
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>60</width>
+                    <width>73</width>
                     <height>20</height>
                    </size>
                   </property>

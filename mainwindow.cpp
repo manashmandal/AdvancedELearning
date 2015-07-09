@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "qbaseoperations.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -7,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 {
     ui->setupUi(this);
+    layout()->setSizeConstraint(QLayout::SetMinAndMaxSize);
+
+
     //Connect more button with searchgroupbox
     connect(ui->moreButton, SIGNAL(toggled(bool)), ui->searchGroupBox, SLOT(setVisible(bool)));
 
@@ -17,8 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //Connecting key with the link loader (WebView)
     connect(this, SIGNAL(passKey(int)), this, SLOT(loadLink(int)));
     connect(this, SIGNAL(loadUrl(QUrl)), this, SLOT(loadTheUrl(QUrl)));
-
-
 
 
     //Adding Items to the list
@@ -33,6 +35,10 @@ MainWindow::MainWindow(QWidget *parent) :
     qDebug() << theUrl;
     //ui->webView->load(topic_name_link_map.value(DEFAULT_INDEX).second);
     ui->webView->load(theUrl);
+    ui->indexTreeWidget->setAnimated(true);
+    ui->moreButton->setText("More");
+    ui->moreButton->setIcon(QIcon(":/images/left_arrow.svg"));
+    ui->fontButton->setIcon(QIcon(":/images/fontsizeicon.svg"));
 }
 
 MainWindow::~MainWindow()
@@ -45,9 +51,11 @@ void MainWindow::on_moreButton_toggled(bool checked)
 {
     ui->searchGroupBox->setVisible(checked);
     if (checked){
-        ui->moreButton->setText(">> Less");
+        ui->moreButton->setText("Less");
+        ui->moreButton->setIcon(QIcon(":/images/right_arrow.svg"));
     } else {
-        ui->moreButton->setText("<< More");
+        ui->moreButton->setText("More");
+        ui->moreButton->setIcon(QIcon(":/images/left_arrow.svg"));
     }
 }
 
@@ -151,8 +159,8 @@ void MainWindow::on_fontButton_clicked()
 //Generate a number base converter dialog
 void MainWindow::on_actionNumber_Base_Converter_triggered()
 {
-    converter = new NumberBaseConverter(this);
-    converter->show();
+    op = new QBaseOperations;
+    op->show();
 }
 
 

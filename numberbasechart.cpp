@@ -9,6 +9,8 @@ NumberBaseChart::NumberBaseChart(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
+
     connect(ui->fontSizeBox, SIGNAL(valueChanged(int)), this, SLOT(setNumberSize(int)));
 
     for (int i = 0; i < ui->tableWidget->rowCount(); i++){
