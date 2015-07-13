@@ -74,13 +74,13 @@ typedef QMap <QString, QString> QVariableMap;
  * ********************************************************************
  *  I think this is my biggest challange, to transform the equation in an cpu readable form so that we can perform calculation easily. I'll use an stack algorithm to parse that.
  *
- *  1. First of all '.' should be placed in the modified expression to find out where the AND operation is happening. Let's create a function called, dotAdder, which takes a QString for an argument and also returns a QString but modified. We'll also add a left first bracket '(' at the beginning and a right first bracket ')' at the end to execute the algorithm. To do that:
+ *  1. First of all '*' should be placed in the modified expression to find out where the AND operation is happening. Let's create a function called, operatorAdder, which takes a QString for an argument and also returns a modified QString. We'll also add a left first bracket '(' at the beginning and a right first bracket ')' at the end to execute the algorithm. To do that:
  *
  * ---- (a)
  *  QString out = input;
  *
  *  for (int i = 0; i + 1 < out.size(); i++){
-       if ((out[i].isLetter() && out[i+1].isLetter()) || (out[i] == ')' && out[i+1].isLetter()) || (out[i] == '(' && out[i+1] == ')') {out.insert(i+1, '.');}
+       if ((out[i].isLetter() && out[i+1].isLetter()) {out.insert(i+1, '*');}
    }
    out.insert(0, '(');
    out.insert(out.size(), ')');
@@ -90,11 +90,11 @@ typedef QMap <QString, QString> QVariableMap;
  *
  * --- (a) Create a stack, we will put a lot of things in it while we process the input string
  *
- * Let's take this expression for an example: (A.B+(C+D).E)
+ * Let's take this expression for an example: (A*B+(C+D)E)
  *
  * and our stack: | - | -  | -  |  - | -  |
  *
- * // Since we trimmed the string and put required '.'s and '(' and ')' we don't need to worry about the input
+ * // Since we trimmed the string and put required '*'s and '(' and ')' we don't need to worry about the input
  *
  * ---------(i)
  *
